@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="450.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainController">
+   <children>
+      <VBox layoutX="4.0" layoutY="14.0" prefHeight="450.0" prefWidth="720.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Archivo">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Cerrar" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Ayuda">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Acerca de" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <VBox prefHeight="424.0" prefWidth="720.0">
+               <children>
+                  <HBox prefHeight="30.0" prefWidth="720.0">
+                     <children>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@home.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="8.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <TextField fx:id="txtSelectDir" editable="false" focusTraversable="false" onMouseClicked="#selectDir" prefHeight="26.0" prefWidth="533.0" />
+                        <ButtonBar prefHeight="26.0" prefWidth="204.0">
+                          <buttons>
+                              <Button fx:id="selectDirButton" mnemonicParsing="false" onAction="#selectDir" prefHeight="26.0" prefWidth="153.0" text="Seleccionar carpeta" />
+                          </buttons>
+                        </ButtonBar>
+                     </children>
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="720.0">
+                     <children>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets right="8.0" />
+                           </HBox.margin>
+                           <image>
+                              <Image url="@glass.png" />
+                           </image>
+                        </ImageView>
+                        <TextField fx:id="txtQuery" onAction="#search" prefHeight="26.0" prefWidth="529.0" promptText="Filtrar: Término clave" />
+                        <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                           <buttons>
+                              <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearQuery" text="Limpiar" />
+                              <Button fx:id="searchButton" mnemonicParsing="false" onAction="#search" text="Buscar" />
+                           </buttons>
+                        </ButtonBar>
+                     </children>
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="56.0" prefHeight="282.0" prefWidth="720.0">
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                     <children>
+                        <ListView fx:id="resultList" prefHeight="265.0" prefWidth="728.0" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="98.0" prefHeight="56.0" prefWidth="720.0">
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                     <children>
+                        <Label fx:id="txtStatus" prefHeight="33.0" prefWidth="392.0" />
+                        <ButtonBar prefHeight="39.0" prefWidth="723.0">
+                          <buttons>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@zip.png" />
+                                 </image>
+                              </ImageView>
+                              <Button fx:id="zipButton" layoutX="644.0" layoutY="17.0" mnemonicParsing="false" onAction="#saveZipFile" text="Generar .zip" />
+                          </buttons>
+                        </ButtonBar>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets top="4.0" />
+               </padding>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
