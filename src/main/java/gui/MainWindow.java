@@ -16,4 +16,8 @@ public class MainWindow extends Application {
         primaryStage.setTitle("Filtrar Constancias");
         primaryStage.show();
     }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

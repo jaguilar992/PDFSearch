@@ -25,7 +25,6 @@ public class Directory {
         p = new FileProcessor(file, dir);
         p.start();
       }
-//      System.out.println(file);
     }
     return files;
   }

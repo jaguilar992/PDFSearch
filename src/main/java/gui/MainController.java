@@ -2,6 +2,9 @@ package gui;
 
 import files.Directory;
 import files.Database;
+import files.FileProcessor;
+import files.PDFFile;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -26,8 +30,9 @@ public class MainController implements Initializable {
     @FXML private Label txtStatus;
     @FXML private TextField txtQuery;
     @FXML private ListView<String> resultList;
+    @FXML private ProgressBar loadingBar;
     private ArrayList<File> initialResults;
-    private Database db = new Database();
+    private final Database db = new Database();
     private ArrayList<File> results = new ArrayList<>();
     private String query = "";
     private String selected;
@@ -39,6 +44,7 @@ public class MainController implements Initializable {
         this.clearButton.setDisable(true);
         this.searchButton.setDisable(true);
         this.txtQuery.setDisable(true);
+        this.loadingBar.setVisible(false);
     }
 
     @FXML
@@ -53,8 +59,17 @@ public class MainController implements Initializable {
             this.selected = selectedDir.toString();
             txtSelectDir.setText(selectedDir.toString());
             try{
-                this.processDir();
-            } catch (IOException e) {
+                var that = this;
+                Task<Void> task = new Task<Void>() {
+
+                    @Override
+                    protected Void call() throws Exception {
+                        that.processDir();
+                        return null;
+                    }
+                };
+                new Thread(task).start();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -70,17 +85,47 @@ public class MainController implements Initializable {
     }
 
     private void processDir() throws IOException {
-        ArrayList<File> files = Directory.indexDirectory(this.selected);
+        this.loadingBar.setVisible(true);
+        this.txtSelectDir.setDisable(true);
+        this.selectDirButton.setDisable(true);
+        ArrayList<File> files = PDFFile.SearchFiles(this.selected);
+        HashMap<String, Long> storedFiles = db.getFiles(this.selected);
         this.initialResults = files;
         this.results = files;
-        txtStatus.setText("Carpeta analizada");
+        final var total = files.size();
+        // Analize
+        File file;
+        for(int i=0; i < files.size(); i++){
+            file = files.get(i);
+            String path = file.toString();
+            if (!storedFiles.containsKey(path) ||
+                storedFiles.get(path) != file.length()
+            ) {
+                System.out.println(file);
+                final var pdf = new PDFFile(file);
+                long fileSize = file.length();
+                int numPages = pdf.getPageCount();
+                this.db.createFileEntry(path, fileSize,numPages,this.selected);
+                final String content = pdf.ReadPDFContent();
+                this.db.updateFileContent(path, content);
+            }
+            final var progress = ((float)(i+1) / (total));
+            this.loadingBar.setProgress(progress);
+        }
+
+
+        /// Last steps
         this.clearButton.setDisable(false);
         this.searchButton.setDisable(false);
         this.txtQuery.setDisable(false);
+        this.txtSelectDir.setDisable(false);
+        this.selectDirButton.setDisable(false);
+        this.loadingBar.setVisible(false);
         this.printResults();
     }
 
     private void printResults() {
+//        this.txtStatus.setText("Listo");
         this.resultList.getItems().clear();
         for(var result : this.results){
             this.resultList.getItems().add(result.toString());
@@ -94,7 +139,7 @@ public class MainController implements Initializable {
         this.printResults();
         if (!query.equals("")){
             this.zipButton.setDisable(false);
-            this.txtStatus.setText("Búsqueda completada");
+//            this.txtStatus.setText("Búsqueda completada");
         } else {
             this.zipButton.setDisable(true);
         }
@@ -107,7 +152,9 @@ public class MainController implements Initializable {
         chooser.getExtensionFilters().add(extFilter);
         Stage stage = (Stage)zipButton.getScene().getWindow();
         File file = chooser.showSaveDialog(stage);
-        Directory.createZipFile(file.toString(), this.results);
-        this.txtStatus.setText("Archivo guardado");
+        if (file != null) {
+            Directory.createZipFile(file.toString(), this.results);
+//            this.txtStatus.setText("Archivo guardado");
+        }
     }
 }
