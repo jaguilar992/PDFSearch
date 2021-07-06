@@ -33,12 +33,14 @@ public class Directory {
 //    String zipFileFullName = zipFilePath.concat(zipFileName + ".zip");
     FileOutputStream fos = new FileOutputStream(zipFilePath);
     ZipOutputStream zos = new ZipOutputStream(fos);
+    int c = 1;
     for (File file :
         files) {
-      zos.putNextEntry(new ZipEntry(Math.random()+file.getName()));
+      zos.putNextEntry(new ZipEntry(c+"."+file.getName()));
       byte[] bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
       zos.write(bytes, 0, bytes.length);
       zos.closeEntry();
+      c++;
     }
     zos.close();
   }

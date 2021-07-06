@@ -49,8 +49,7 @@ public class MainController implements Initializable {
 
     @FXML
     public void selectDir(){
-        this.txtQuery.setText("");
-        this.query = "";
+        this.clearQuery();
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Seleccionar carpeta");
         Stage stage = (Stage)selectDirButton.getScene().getWindow();
@@ -79,8 +78,7 @@ public class MainController implements Initializable {
     public void clearQuery(){
         this.query = "";
         this.txtQuery.setText("");
-        this.results = this.initialResults;
-        this.printResults();
+        this.resultList.getItems().clear();
         this.zipButton.setDisable(true);
     }
 
@@ -107,6 +105,7 @@ public class MainController implements Initializable {
                 int numPages = pdf.getPageCount();
                 this.db.createFileEntry(path, fileSize,numPages,this.selected);
                 final String content = pdf.ReadPDFContent();
+                System.out.println(content);
                 this.db.updateFileContent(path, content);
             }
             final var progress = ((float)(i+1) / (total));
@@ -121,7 +120,6 @@ public class MainController implements Initializable {
         this.txtSelectDir.setDisable(false);
         this.selectDirButton.setDisable(false);
         this.loadingBar.setVisible(false);
-        this.printResults();
     }
 
     private void printResults() {
@@ -137,11 +135,11 @@ public class MainController implements Initializable {
         this.query = this.txtQuery.getText();
         this.results = db.search("%"+this.query+"%", this.selected);
         this.printResults();
-        if (!query.equals("")){
+        if (!query.equals("") && this.results.size() > 0){
             this.zipButton.setDisable(false);
-//            this.txtStatus.setText("Búsqueda completada");
         } else {
             this.zipButton.setDisable(true);
+            this.resultList.getItems().clear();
         }
     }
 

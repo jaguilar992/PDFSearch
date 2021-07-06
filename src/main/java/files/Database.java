@@ -133,7 +133,7 @@ public class Database {
   public ArrayList<File> search(String query, String dir) {
     ArrayList<File> data = new ArrayList<>();
     this.createTableIfNotExists();
-    final String BASE_QUERY = "SELECT * FROM FILES WHERE content LIKE ? AND rootPath = ?";
+    final String BASE_QUERY = "SELECT * FROM FILES WHERE content LIKE ? AND path LIKE '%'|| ? ||'%'";
 
     try (
         PreparedStatement pstmt = this.conn.prepareStatement(BASE_QUERY)
